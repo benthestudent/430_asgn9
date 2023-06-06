@@ -41,3 +41,10 @@ class IdC < ExprC
 end
 
 # IfC
+class IfC < ExprC
+    getter cond : ExprC
+    getter ifT : ExprC
+    getter otherwise : ExprC
+    def initialize(@cond, @ifT, @otherwise)
+    end
+end
