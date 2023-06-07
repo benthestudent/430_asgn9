@@ -16,6 +16,7 @@ class NumV < Val
         puts n
     end
 
+    def_equals @n
 end
 
 # StrV
@@ -28,6 +29,8 @@ class StrV < Val
     def serialize
         puts str
     end
+
+    def_equals @str
 end
 
 # CloV
@@ -42,6 +45,8 @@ class CloV < Val
     def serialize
         puts "#<procedure>"
     end
+
+    def_equals @args, @body, @env
 end
 
 # PrimV
@@ -55,6 +60,8 @@ class PrimV < Val
     def serialize
         puts "#<primop>"
     end
+
+    def_equals @val, @func
 end
 
 # ErrV (idk if we should have this or just use a PrimV)
@@ -67,6 +74,8 @@ class ErrV < Val
     def serialize
         puts "#<primop>"
     end
+
+    def_equals @val
 end
 
 # BoolV
@@ -79,4 +88,6 @@ class BoolV < Val
     def serialize
         puts b
     end
+
+    def_equals @b
 end
