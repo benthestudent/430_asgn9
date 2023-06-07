@@ -14,4 +14,13 @@ class Environment
     def get_binding(sym)
         @bindings.fetch(sym, ErrV.new "Binding not found")
     end
+
+    # the class method copy, returns a new object of the environment that is a copy of it
+    def copy()
+        copy = Environment.new
+        @bindings.each do |key, value|
+            copy.add_binding(key, value)
+        end
+        copy
+    end
 end

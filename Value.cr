@@ -1,9 +1,6 @@
 # Value Type Definitions
-class Val
-    def serialize
-        # there should never be a generic value.
-        # but i couldn't find anything about abstract classes
-    end
+abstract class Val
+    abstract def serialize
 end
 # NumV
 class NumV < Val
