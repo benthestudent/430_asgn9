@@ -10,7 +10,7 @@ class NumV < Val
 
     # the serialize method prints n
     def serialize
-        puts n
+        n.to_s
     end
 
     def_equals @n
@@ -24,7 +24,7 @@ class StrV < Val
 
     # the serialize method prints str
     def serialize
-        puts str
+        str
     end
 
     def_equals @str
@@ -40,7 +40,7 @@ class CloV < Val
 
     # the serialize method prints "#<procedure>"
     def serialize
-        puts "#<procedure>"
+        "#<procedure>"
     end
 
     def_equals @args, @body, @env
@@ -55,7 +55,7 @@ class PrimV < Val
 
     # the serialize method prints "#<primop>"
     def serialize
-        puts "#<primop>"
+        "#<primop>"
     end
 
     def_equals @val, @func
@@ -69,7 +69,7 @@ class ErrV < Val
 
     # the serialize method prints "#<primop>"
     def serialize
-        puts "#<primop>"
+        "#<primop>"
     end
 
     def_equals @val
@@ -83,7 +83,7 @@ class BoolV < Val
 
     # the serialize method prints the value of b
     def serialize
-        puts b
+        b.to_s
     end
 
     def_equals @b

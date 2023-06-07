@@ -12,7 +12,7 @@ class Environment
     end
 
     def get_binding(sym)
-        @bindings.fetch(sym, ErrV.new "Binding not found")
+        @bindings.fetch(sym, nil)
     end
 
     # the class method copy, returns a new object of the environment that is a copy of it

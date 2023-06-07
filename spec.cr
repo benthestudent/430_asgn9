@@ -28,25 +28,26 @@ describe "Environment::Object" do
         env.bindings.size().should eq(3)
     end
 end
-
+# NOTE: ANYTHING PENDING HAS NOT BEEN FULLY IMPLEMENTED OR TESTED YET
 describe "Interpretor::Object" do
     it "is created" do
         interp_obj = create_test_object()
         interp_obj.should_not be_nil
     end
-    pending "interprets NumC" do
+    it "interprets NumC" do
         interp_obj = create_test_object()
         numc = NumC.new 1
-        interp_obj.interp(numc).should eq(NumV.new 1) 
+        env = create_test_env()
+        interp_obj.interp(numc, env).should eq(NumV.new 1) 
     end
-    pending "interprets IdC" do
+    it "interprets IdC" do
         interp_obj = create_test_object()
         expr = IdC.new :a
         env = create_test_env()
         env.add_binding(:a, NumV.new 1)
         interp_obj.interp(expr, env).should eq(NumV.new 1) 
     end
-    pending "should raise error if identifier unbound" do
+    it "should raise error if identifier unbound" do
         expect_raises(VVQSError, "Unbound Identifier") do
             interp_obj = create_test_object()
             expr = IdC.new :z
@@ -113,22 +114,30 @@ end
 
 
 describe "Val::Object" do
-    pending "serializes NumVs" do
-
+    it "should serialize NumVs" do
+        numV = NumV.new(1)
+        numV.serialize().should eq("1.0")
     end
-    pending "serializes StrVs" do
-
+    it "should serialize StrVs" do
+        strV = StrV.new("yo")
+        strV.serialize().should eq("yo")
     end
-    pending "serializes BoolVs" do
-
+    it "should serialize BoolVs" do
+        boolV = BoolV.new(true)
+        boolV.serialize().should eq("true")
+        boolV2 = BoolV.new(false)
+        boolV2.serialize().should eq("false")
     end
-    pending "serializes PrimVs" do
-
+    it "should serialize PrimVs" do
+        primV = create_plus_primV()
+        primV.serialize().should eq("#<primop>")
     end
-    pending "serializes CloVs" do
-
+    it "should serialize CloVs" do
+        cloV = CloV.new([:a], NumC.new(1), create_test_env)
+        cloV.serialize().should eq("#<procedure>")
     end
-    pending "serializes ErrVs" do
-
+    it "should serialize ErrVs" do
+        errV = ErrV.new("ahhhh")
+        errV.serialize().should eq("#<primop>")
     end
 end

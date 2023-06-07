@@ -38,7 +38,12 @@ class Interpretor
     #interp for IdC
     def interp(expr : IdC, env : Environment)
         # look for identifier in environment
-        return env.get_binding(expr.id)
+        puts "here"
+        val = env.get_binding(expr.id)
+        if val
+            return val
+        end
+        raise VVQSError.new("Unbound Identifier")
 
     end
 
