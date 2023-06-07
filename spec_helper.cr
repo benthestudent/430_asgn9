@@ -14,4 +14,9 @@ def create_test_env()
     env
 end
 
+def create_plus_primV()
+    plusOp = ->(x : Val, y : Val) {NumV.new(x.as(NumV).n + y.as(NumV).n).as(Val)}
+    PrimV.new(:+, plusOp)
+end
+
 
