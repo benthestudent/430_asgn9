@@ -91,6 +91,12 @@ describe "Interpretor::Object" do
         env.add_binding(:+, plusPrimV)
         interp_obj.interp(expr, env).should eq(NumV.new 3)
     end
+    it "interprets AppC of minus" do
+        interp_obj = create_test_object()
+        env = create_top_level_env()
+        expr = AppC.new(IdC.new(:-), [NumC.new(3), NumC.new(2)] of ExprC)
+        interp_obj.interp(expr, env).should eq(NumV.new 1)
+    end
     pending "interprets LamC" do
         interp_obj = create_test_object()
    
