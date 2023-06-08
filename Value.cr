@@ -1,3 +1,5 @@
+require "./ExprC.cr"
+
 # Value Type Definitions
 class Val
     def serialize
@@ -7,7 +9,7 @@ class Val
 end
 # NumV
 class NumV < Val
-    getter n : Int32
+    getter n : Float64
     def initialize(@n)
     end
 

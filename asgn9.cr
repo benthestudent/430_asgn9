@@ -7,12 +7,30 @@ end
 class Interpretor
 
     # the interp functions take an ExprC and return a Val
+    
 
     # we will use overloading instead of match patterns, so that
     # Crystal will do the work of switching for us.
 
+    # generic method that routes to proper type of ExprC
+    def interp(expr : ExprC, env : Environment)
+        if(expr.is_a?(IdC))
+            return interp(expr.as(IdC), env)
+        elsif(expr.is_a?(AppC))
+            return interp(expr.as(AppC), env)
+        elsif(expr.is_a?(LamC))
+            return interp(expr.as(LamC), env)
+        elsif(expr.is_a?(NumC))
+            return interp(expr.as(NumC), env)
+        elsif(expr.is_a?(StrC))
+            return interp(expr.as(StrC), env)
+        elsif(expr.is_a?(IfC))
+            return interp(expr.as(IfC), env)
+        end
+    end
+
     #interp for NumC, return a NumV with the same number as the NumC
-    def interp(expr : NumC, env : Environmnt)
+    def interp(expr : NumC, env : Environment)
         num = NumV.new expr.num
         num
     end
@@ -20,9 +38,13 @@ class Interpretor
     #interp for IdC
     def interp(expr : IdC, env : Environment)
         # look for identifier in environment
-
+        val = env.get_binding(expr.id)
         # if we can't find it, raise an error
-
+        if (val.nil?)
+            raise VVQSError.new("Unbound Identifier")
+        else
+            return val
+        end
     end
 
     #interp for StrC and return a StrV with the same string value as the StrC
@@ -45,7 +67,7 @@ class Interpretor
             # apply primitive function
             # interpret parameters
             func = func.as(PrimV)
-            params = expr.params.each.map(->(e : ExprC ) {interp(e, env)})
+            params = expr.params.map { |e| interp(e, env).as(Val) }
             # call function with interpreted parameters
             func.func.call(params[0], params[1])
         when CloV
@@ -74,10 +96,5 @@ class Interpretor
 
 end
 
-
-
-# Define some top-level PrimV's
-
-# Define top-level environment
 
 # Top-interp
