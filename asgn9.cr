@@ -90,23 +90,81 @@ class Interpretor
             end
         
     end
-    #interp for LamC
     def interp(expr : LamC, env : Environment)
-        # make a CloV
-        
+        # A LamC represents a function definition. It does not do anything
+        # immediately, so it just gets converted into a CloV with its current environment.
+        CloV.new(expr.args, expr.body, env)
     end
+    
 
     #interp for IfC
     def interp(expr : IfC, env : Environment)
-
+        # An IfC is an if conditional. First, it evaluates its condition.
+        cond = interp(expr.cond, env)
+    
+        # If the condition is not a BoolV, it's an error
+        unless cond.is_a?(BoolV)
+            raise VVQSError.new("If condition must be a boolean")
+        end
+    
+        # Depending on the condition value, it then evaluates either the true branch or the false branch.
+        if cond.val
+            interp(expr.ifT, env)
+        else
+            interp(expr.otherwise, env)
+        end
     end
+    
 
 end
 
 
 
-# Define some top-level PrimV's
+def top_interp(sexp)
+    top_env = Environment.new
 
-# Define top-level environment
+    top_env.add_binding(:+, PrimV.new(:+) do |a, b|
+        raise "Expected numbers" unless a.is_a?(NumV) && b.is_a?(NumV)
+        NumV.new(a.as(NumV).n + b.as(NumV).n) 
+    end)
 
-# Top-interp
+    top_env.add_binding(:-, PrimV.new(:-) do |a , b |
+        raise "Expected numbers" unless a.is_a?(NumV) && b.is_a?(NumV)
+        NumV.new(a.as(NumV).n - b.as(NumV).n) 
+    end)
+
+    top_env.add_binding(:*, PrimV.new(:*) do |a , b |
+        raise "Expected numbers" unless a.is_a?(NumV) && b.is_a?(NumV)
+        NumV.new(a.as(NumV).n * b.as(NumV).n) 
+    end)
+
+    top_env.add_binding(:/, PrimV.new(:/) do |a , b |
+        raise "Expected numbers" unless a.is_a?(NumV) && b.is_a?(NumV)
+        raise "Divide by zero" if b.as(NumV).n == 0.0
+        NumV.new(a.as(NumV).n / b.as(NumV).n) 
+    end)
+
+    top_env.add_binding(:<=, PrimV.new(:<=) do |a , b |
+        raise "Expected numbers" unless a.is_a?(NumV) && b.is_a?(NumV)
+        BoolV.new(a.as(NumV).n <= b.as(NumV).n) 
+    end)
+
+    #top_env.add_binding(:'equal?', PrimV.new(:'equal?') do |a , b |
+    #    BoolV.new(false) if a.class != b.class || a.is_a?(PrimV) || a.is_a?(CloV)
+    #    BoolV.new(a == b)
+    #end)
+
+    #top_env.add_binding(:'error', PrimV.new(:'error') do |v |
+    #    raise "User-error: #{v.serialize}"
+    #end)
+
+    #top_env.add_binding(:'true', BoolV.new(true))
+    #top_env.add_binding(:'false', BoolV.new(false))
+
+    # Parse the S-expression into an ExprC
+    expr = parse(sexp)
+    # Interpret the ExprC
+    val = interp(expr, top_env)
+    # Serialize the result
+    val.serialize
+end
