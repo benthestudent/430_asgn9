@@ -1,3 +1,5 @@
+require "./ExprC.cr"
+
 # Value Type Definitions
 abstract class Val
     abstract def serialize

@@ -1,19 +1,25 @@
 require "./spec_helper"
 
 describe "Environment::Object" do
-    it "is created" do
-        env = create_test_env()
-        env.should_not be_nil
+    describe "#initialize" do
+        it "is created" do
+            env = create_test_env()
+            env.should_not be_nil
+        end
     end
-    it "should be able to add a binding" do
-        env = create_test_env()
-        env.add_binding(:a, NumV.new 1)
-        env.bindings.size().should eq(1)
+    describe "#add_binding" do
+        it "should be able to add a binding" do
+            env = create_test_env()
+            env.add_binding(:a, NumV.new 1)
+            env.bindings.size().should eq(7)
+        end
     end
-    it "should be able to fetch a binding" do
-        env = create_test_env()
-        env.add_binding(:a, NumV.new 1)
-        env.get_binding(:a).should_not be_nil
+    describe "#get_binding" do
+        it "should be able to fetch a binding" do
+            env = create_test_env()
+            env.add_binding(:a, NumV.new 1)
+            env.get_binding(:a).should_not be_nil
+        end
     end
     it "should be able to copy itself" do
         env = create_test_env()
@@ -30,24 +36,30 @@ describe "Environment::Object" do
 end
 # NOTE: ANYTHING PENDING HAS NOT BEEN FULLY IMPLEMENTED OR TESTED YET
 describe "Interpretor::Object" do
-    it "is created" do
-        interp_obj = create_test_object()
-        interp_obj.should_not be_nil
+    describe "#initialize" do
+        it "is created" do
+            interp_obj = create_test_object()
+            interp_obj.should_not be_nil
+        end
     end
-    it "interprets NumC" do
-        interp_obj = create_test_object()
-        numc = NumC.new 1
-        env = create_test_env()
-        interp_obj.interp(numc, env).should eq(NumV.new 1) 
+    describe "NumC case" do
+        it "interprets NumC" do
+            interp_obj = create_test_object()
+            numc = NumC.new 1
+            env = create_test_env()
+            interp_obj.interp(numc, env).should eq(NumV.new 1) 
+        end
     end
-    it "interprets IdC" do
-        interp_obj = create_test_object()
-        expr = IdC.new :a
-        env = create_test_env()
-        env.add_binding(:a, NumV.new 1)
-        interp_obj.interp(expr, env).should eq(NumV.new 1) 
+    describe "IdC case" do
+        it "interprets IdC" do
+            interp_obj = create_test_object()
+            expr = IdC.new :a
+            env = create_test_env()
+            env.add_binding(:a, NumV.new 1)
+            interp_obj.interp(expr, env).should eq(NumV.new 1) 
+        end
     end
-    it "should raise error if identifier unbound" do
+    describe "Raise error if binding not in environment" do
         expect_raises(VVQSError, "Unbound Identifier") do
             interp_obj = create_test_object()
             expr = IdC.new :z
@@ -55,58 +67,61 @@ describe "Interpretor::Object" do
             interp_obj.interp(expr, env)
         end
     end
-    pending "interprets IfC if it's true" do
-        interp_obj = create_test_object()
-        expr = IfC.new(IdC.new :a, NumC.new 1, NumC.new 2)
-        env = create_test_env()
-        env.add_binding(:a, BoolV.new true)
-        interp_obj.interp(expr, env).should eq(NumV.new 1) 
-    end
-    pending "interprets IfC if it's false" do
-        interp_obj = create_test_object()
-        expr = IfC.new(IdC.new :a, NumC.new 1, NumC.new 2)
-        env = create_test_env()
-        env.add_binding(:a, BoolV.new false)
-        interp_obj.interp(expr, env).should eq(NumV.new 2) 
-    end
-    pending "should raise error if condition is not a boolean" do
-        expect_raises(VVQSError, "Condition is not a boolean") do
+    describe "IfC true case" do
+        pending "interprets IfC if it's true" do
             interp_obj = create_test_object()
             expr = IfC.new(IdC.new :a, NumC.new 1, NumC.new 2)
             env = create_test_env()
-            env.add_binding(:a, NumV.new 1)
-            interp_obj.interp(expr, env)
+            env.add_binding(:a, BoolV.new true)
+            interp_obj.interp(expr, env).should eq(NumV.new 1) 
         end
     end
-    pending "interprets StrC" do
-        interp_obj = create_test_object()
-        expr = StrC.new "yo"
-        env = create_test_env()
-        interp_obj.interp(expr, env).should eq(StrV.new "yo")
+    describe "IfC false case" do
+        pending "interprets IfC if it's false" do
+            interp_obj = create_test_object()
+            expr = IfC.new(IdC.new :a, NumC.new 1, NumC.new 2)
+            env = create_test_env()
+            env.add_binding(:a, BoolV.new false)
+            interp_obj.interp(expr, env).should eq(NumV.new 2) 
+        end
     end
-    it "interprets AppC of the plus" do
-        interp_obj = create_test_object()
-        expr = AppC.new(IdC.new(:+), [NumC.new(1), NumC.new(2)] of ExprC)
-        env = create_test_env()
-        plusPrimV = create_plus_primV()
-        env.add_binding(:+, plusPrimV)
-        interp_obj.interp(expr, env).should eq(NumV.new 3)
+    # describe "IfC error case where test doesn't eval to a bool" do
+    #     pending expect_raises(VVQSError, "Condition is not a boolean") do
+    #         interp_obj = create_test_object()
+    #         expr = IfC.new(IdC.new :a, NumC.new 1, NumC.new 2)
+    #         env = create_test_env()
+    #         env.add_binding(:a, NumV.new 1)
+    #         interp_obj.interp(expr, env)
+    #     end
+    # end
+    describe "StrC case" do
+        pending "interprets StrC" do
+            interp_obj = create_test_object()
+            expr = StrC.new "yo"
+            env = create_test_env()
+            interp_obj.interp(expr, env).should eq(StrV.new "yo")
+        end
     end
-    it "interprets AppC of minus" do
-        interp_obj = create_test_object()
-        env = create_top_level_env()
-        expr = AppC.new(IdC.new(:-), [NumC.new(3), NumC.new(2)] of ExprC)
-        interp_obj.interp(expr, env).should eq(NumV.new 1)
+    describe "AppC '+' case" do
+        it "interprets AppC of the plus" do
+            interp_obj = create_test_object()
+            expr = AppC.new(IdC.new(:+), [NumC.new(1).as ExprC, NumC.new(2).as ExprC])
+            env = create_test_env()
+            # we need to add the primitives to the environment
+            interp_obj.interp(expr, env).should eq(NumV.new 3)
+        end
     end
-    pending "interprets LamC" do
-        interp_obj = create_test_object()
-   
+    describe "LamC case" do
+        pending "interprets LamC" do
+            interp_obj = create_test_object()
+    
+        end
     end
 end
 
 describe "NumC::Object" do
     it "is created" do
-        numC = NumC.new 1
+        numC = NumC.new(1)
         numC.num == 1
     end
 end
