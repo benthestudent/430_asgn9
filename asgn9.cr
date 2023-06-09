@@ -55,6 +55,7 @@ class Interpretor
 
     #interp for AppC
     def interp(expr : AppC, env : Environment)
+        # Remember an AppC contains func (ExprC) and params (Array(ExprC))
         func = interp(expr.func, env)
         case typeof(func)
         when NumV
@@ -77,12 +78,17 @@ class Interpretor
                 raise VVQSError.new("Invalid Number of Arguments")
             end
             # loop through args and params, creating new bindings in a copy of func.env
+            params = expr.params.map { |e| interp(e, env).as(Val) }
+            extended_env = func.env.copy()
+            func.args.each.with_index do |val, ind|
+                extended_env.add_binding(val, params[ind])
+            end
 
             # interp func.body with extended env
-
+            interp(func.body, extended_env)
         end
+        
     end
-
     #interp for LamC
     def interp(expr : LamC, env : Environment)
         # make a CloV

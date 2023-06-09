@@ -21,8 +21,20 @@ describe "Environment::Object" do
             env.get_binding(:a).should_not be_nil
         end
     end
+    it "should be able to copy itself" do
+        env = create_test_env()
+        env.add_binding(:x, NumV.new 1)
+        env.add_binding(:y, NumV.new 1)
+        copy = env.copy()
+        copy.bindings.size().should eq(2)
+        env.add_binding(:z, NumV.new 1)
+        copy.bindings.size().should eq(2)
+        copy.add_binding(:a, NumV.new 1)
+        copy.add_binding(:b, NumV.new 1)
+        env.bindings.size().should eq(3)
+    end
 end
-
+# NOTE: ANYTHING PENDING HAS NOT BEEN FULLY IMPLEMENTED OR TESTED YET
 describe "Interpretor::Object" do
     describe "#initialize" do
         it "is created" do
@@ -117,22 +129,30 @@ end
 
 
 describe "Val::Object" do
-    pending "serializes NumVs" do
-
+    it "should serialize NumVs" do
+        numV = NumV.new(1)
+        numV.serialize().should eq("1.0")
     end
-    pending "serializes StrVs" do
-
+    it "should serialize StrVs" do
+        strV = StrV.new("yo")
+        strV.serialize().should eq("yo")
     end
-    pending "serializes BoolVs" do
-
+    it "should serialize BoolVs" do
+        boolV = BoolV.new(true)
+        boolV.serialize().should eq("true")
+        boolV2 = BoolV.new(false)
+        boolV2.serialize().should eq("false")
     end
-    pending "serializes PrimVs" do
-
+    it "should serialize PrimVs" do
+        primV = create_plus_primV()
+        primV.serialize().should eq("#<primop>")
     end
-    pending "serializes CloVs" do
-
+    it "should serialize CloVs" do
+        cloV = CloV.new([:a], NumC.new(1), create_test_env)
+        cloV.serialize().should eq("#<procedure>")
     end
-    pending "serializes ErrVs" do
-
+    it "should serialize ErrVs" do
+        errV = ErrV.new("ahhhh")
+        errV.serialize().should eq("#<primop>")
     end
 end
