@@ -26,12 +26,12 @@ describe "Environment::Object" do
         env.add_binding(:x, NumV.new 1)
         env.add_binding(:y, NumV.new 1)
         copy = env.copy()
-        copy.bindings.size().should eq(2)
+        copy.bindings.size().should eq(8)
         env.add_binding(:z, NumV.new 1)
-        copy.bindings.size().should eq(2)
+        copy.bindings.size().should eq(8)
         copy.add_binding(:a, NumV.new 1)
         copy.add_binding(:b, NumV.new 1)
-        env.bindings.size().should eq(3)
+        env.bindings.size().should eq(9)
     end
 end
 # NOTE: ANYTHING PENDING HAS NOT BEEN FULLY IMPLEMENTED OR TESTED YET

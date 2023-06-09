@@ -57,21 +57,21 @@ class Interpretor
     def interp(expr : AppC, env : Environment)
         # Remember an AppC contains func (ExprC) and params (Array(ExprC))
         func = interp(expr.func, env)
-        case typeof(func)
-        when NumV
+        case func.class
+        when NumV.class
             # Invalid AppC. Let's bounce
             raise VVQSError.new("Cannot Apply a Number")
-        when ErrV
+        when ErrV.class
             # raise exception
             raise VVQSError.new("User Error")
-        when PrimV
+        when PrimV.class
             # apply primitive function
             # interpret parameters
             func = func.as(PrimV)
             params = expr.params.map { |e| interp(e, env).as(Val) }
             # call function with interpreted parameters
             func.func.call(params[0], params[1])
-        when CloV
+        when CloV.class
             func = func.as(CloV)
             # check to make sure number of arguments match
             if expr.params.size != func.args.size
